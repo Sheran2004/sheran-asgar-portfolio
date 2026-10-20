@@ -333,7 +333,7 @@ export const skillEvidence: Record<string, string[]> = {
   Java: ['DSA practice'], Python: ['TranscriptStudio', 'Machine learning experiments'], React: ['MPLAD Sentinel', 'Smart Crop Advisory System'], 'Next.js': ['Smart Crop Advisory System'], Flask: ['TranscriptStudio'], PostgreSQL: ['MPLAD Sentinel'], 'Power BI': ['Data analytics skillset'], Tableau: ['Data analytics skillset'], 'Git / GitHub': ['Project version control'], 'Machine Learning': ['HAM10000 melanoma research', 'TranscriptStudio'],
 };
 
-export type Episode = { code: string; title: string; description: string; tags: string[]; runtime: string; palette: Palette };
+export type Episode = { code: string; title: string; description: string; tags: string[]; runtime: string; palette: Palette; github?: string; live?: string };
 export type Season = { number: number; title: string; period: string; synopsis: string; episodes: Episode[] };
 export const seasons: Season[] = [
   { number: 1, title: 'The Foundation', period: '2023 – Present', synopsis: 'The B.Tech Computer Science and Engineering journey, paired with hands-on software development.', episodes: [
@@ -341,11 +341,11 @@ export const seasons: Season[] = [
     { code: 'S01 E02', title: 'The Problem Solver', description: 'Building coding fundamentals through Java, Python, web development, and project-based learning.', tags: ['Java', 'Python', 'DSA'], runtime: 'Ongoing', palette: amber },
   ] },
   { number: 2, title: 'Building for the Web', period: '2024 – 2026', synopsis: 'Full-stack projects built around real interfaces, APIs, data, and deployment.', episodes: [
-    { code: 'S02 E01', title: 'The Crop Advisor', description: 'A responsive Smart Crop Advisory System using Next.js, Firebase, and Tailwind CSS.', tags: ['Next.js', 'Firebase', 'Tailwind'], runtime: 'Project', palette: jade },
-    { code: 'S02 E02', title: 'The Data Workflow', description: 'MPLAD Sentinel explores anomaly signals and case-review workflows for development-work data.', tags: ['Analytics', 'PostgreSQL', 'GovTech'], runtime: 'Project', palette: ocean },
+    { code: 'S02 E01', title: 'The Crop Advisor', description: 'A responsive Smart Crop Advisory System using Next.js, Firebase, and Tailwind CSS.', tags: ['Next.js', 'Firebase', 'Tailwind'], runtime: 'Project', palette: jade, github: 'https://github.com/Sheran2004/Smart-Crop-Advisory-System' },
+    { code: 'S02 E02', title: 'The Data Workflow', description: 'MPLAD Sentinel explores anomaly signals and case-review workflows for development-work data.', tags: ['Analytics', 'PostgreSQL', 'GovTech'], runtime: 'Project', palette: ocean, github: 'https://github.com/Sheran2004/mplad-sentinel', live: 'https://mplad-sentinel-eosin.vercel.app' },
   ] },
   { number: 3, title: 'AI in Practice', period: '2025 – 2026', synopsis: 'Experiments across speech technology, machine learning, and computer vision.', episodes: [
-    { code: 'S03 E01', title: 'The Translator', description: 'TranscriptStudio combines timestamped transcription with multilingual translation workflows.', tags: ['Whisper', 'Flask', 'Translation'], runtime: 'Project', palette: violet },
+    { code: 'S03 E01', title: 'The Translator', description: 'TranscriptStudio combines timestamped transcription with multilingual translation workflows.', tags: ['Whisper', 'Flask', 'Translation'], runtime: 'Project', palette: violet, github: 'https://github.com/Sheran2004/TranscriptStudio' },
     { code: 'S03 E02', title: 'The Researcher', description: 'Deep-learning experiments using the HAM10000 skin-lesion image dataset.', tags: ['PyTorch', 'Computer Vision', 'Evaluation'], runtime: 'Research project', palette: crimson },
   ] },
 ];
