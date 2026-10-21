@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { achievements, certifications, education, experience, profile, projects, skillCategories } from '../data/portfolio';
 import { EASE, Magnetic, SectionHeading } from './fx';
 
+const RESUME_URL = '/assets/Resume_Sheran.pdf';
+
 /** THE FULL STORY — a designed resume preview plus view / download actions. */
 export default function ResumeSection({ onView }: { onView: () => void }) {
   return (
@@ -35,7 +37,13 @@ export default function ResumeSection({ onView }: { onView: () => void }) {
                 ▶ View Resume
               </button>
             </Magnetic>
-
+            <a
+              href={RESUME_URL}
+              download="Mohammad_Sheran_Asgar_Resume.pdf"
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/15 px-6 text-[15px] font-semibold text-bone transition hover:border-white/35 hover:bg-white/5"
+            >
+              ↓ Download Resume (PDF)
+            </a>
           </div>
           <dl className="mt-8 grid grid-cols-3 gap-px overflow-hidden rounded-xl bg-white/10 text-center">
             {[
