@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { achievements, certifications, education, experience, profile, projects, skillCategories } from '../data/portfolio';
 import { EASE, Magnetic, SectionHeading } from './fx';
+import { trackPortfolioEvent } from "../lib/analytics";
 
 const RESUME_URL = '/assets/Resume_Sheran.pdf';
 
@@ -31,13 +32,17 @@ export default function ResumeSection({ onView }: { onView: () => void }) {
               <button
                 type="button"
                 data-cursor="view"
-                onClick={onView}
+                onClick={() => {
+                  trackPortfolioEvent("resume_view");
+                  onView();
+                }}
                 className="flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-bone px-6 text-[15px] font-bold text-ink transition hover:bg-white"
               >
                 ▶ View Resume
               </button>
             </Magnetic>
             <a
+              onClick={() => trackPortfolioEvent("resume_download")}
               href={RESUME_URL}
               download="Mohammad_Sheran_Asgar_Resume.pdf"
               className="flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-white/15 px-6 text-[15px] font-semibold text-bone transition hover:border-white/35 hover:bg-white/5"

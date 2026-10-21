@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import type { Project } from '../data/portfolio';
 import { EASE, Tilt } from './fx';
 import { ProjectArt } from './Poster';
+import { trackPortfolioEvent } from "../lib/analytics";
 
 export default function ProjectCard({ project, index, onOpen }: { project: Project; index: number; onOpen: () => void }) {
   return (
@@ -17,13 +18,11 @@ export default function ProjectCard({ project, index, onOpen }: { project: Proje
           role="button"
           tabIndex={0}
           data-cursor="view"
-          onClick={onOpen}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              onOpen();
-            }
+          onClick={() => {
+            trackPortfolioEvent("project_view", project.id);
+            onOpen();
           }}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); trackPortfolioEvent("project_view", project.id); onOpen(); } }}
           aria-label={`Open ${project.title}`}
           className="focus-ring relative aspect-[4/5] overflow-hidden rounded-2xl ring-1 ring-white/10 transition duration-500 group-hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] group-hover:ring-white/25 sm:aspect-[16/12] lg:aspect-auto lg:h-[66vh]"
         >
@@ -60,7 +59,10 @@ export default function ProjectCard({ project, index, onOpen }: { project: Proje
                   target="_blank"
                   rel="noreferrer"
                   data-cursor="link"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    trackPortfolioEvent("project_live_demo", project.id);
+                  }}
                   className="flex min-h-11 items-center gap-2 rounded-md border border-emerald-300/50 bg-emerald-950/50 px-4 text-sm font-semibold text-bone backdrop-blur transition hover:border-emerald-200"
                 >
                   Live Demo ↗
@@ -72,7 +74,10 @@ export default function ProjectCard({ project, index, onOpen }: { project: Proje
                   target="_blank"
                   rel="noreferrer"
                   data-cursor="link"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    trackPortfolioEvent("project_github", project.id);
+                  }}
                   className="flex min-h-11 items-center gap-2 rounded-md border border-white/25 bg-black/30 px-4 text-sm font-semibold text-bone backdrop-blur transition hover:border-bone"
                 >
                   GitHub ↗

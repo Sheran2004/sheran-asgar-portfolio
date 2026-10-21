@@ -2,12 +2,17 @@ import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useScrollLock } from '../hooks/smoothScroll';
 import { EASE } from './fx';
+import { trackPortfolioEvent } from "../lib/analytics";
 
 const RESUME_URL = '/assets/Resume_Sheran.pdf';
 
 /** Full-screen viewer for the actual resume PDF. */
 export default function ResumeModal({ onClose }: { onClose: () => void }) {
   useScrollLock(true);
+
+  useEffect(() => {
+    trackPortfolioEvent("resume_view");
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -31,6 +36,7 @@ export default function ResumeModal({ onClose }: { onClose: () => void }) {
         <p className="truncate font-display text-2xl tracking-wide text-bone">The Full Story</p>
         <div className="flex shrink-0 items-center gap-2">
           <a
+            onClick={() => trackPortfolioEvent("resume_download")}
             href={RESUME_URL}
             download="Mohammad_Sheran_Asgar_Resume.pdf"
             className="flex min-h-10 items-center justify-center rounded-full bg-white/10 px-4 text-sm font-semibold text-bone transition hover:bg-white/20"
