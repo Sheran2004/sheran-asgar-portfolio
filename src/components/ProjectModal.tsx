@@ -87,9 +87,15 @@ export default function ProjectModal({ project, onClose, onSwitch }: { project: 
               <span>{project.genre}</span>
             </motion.div>
 
-            <motion.p variants={block} className="mt-4 max-w-3xl text-lg leading-relaxed text-bone sm:text-xl">
-              {project.logline}
-            </motion.p>
+            <motion.section variants={block} className="mt-6 max-w-3xl">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.3em] text-crimson-2">
+                Project Overview
+              </p>
+
+              <p className="text-lg leading-relaxed text-bone sm:text-xl">
+                {project.logline}
+              </p>
+            </motion.section>
 
             {(project.live || project.github) && (
               <motion.div variants={block} className="mt-6 flex flex-wrap gap-3">
@@ -141,19 +147,77 @@ export default function ProjectModal({ project, onClose, onSwitch }: { project: 
                   </motion.div>
                 ))}
               </div>
+              {project.metrics.length === 0 && (
+                <div className="rounded-xl border border-white/10 bg-white/[0.025] p-5 sm:p-6">
+                  <p className="font-display text-2xl text-bone">
+                    Built with purpose.
+                  </p>
+
+                  <p className="mt-2 max-w-2xl text-sm leading-relaxed text-mist">
+                    Explore the implementation details, technologies, and key features
+                    below to understand the work behind this project.
+                  </p>
+                </div>
+              )}
             </motion.section>
 
             <div className="mt-12 grid gap-10 lg:grid-cols-[3fr_2fr]">
               <motion.section variants={block}>
-                <h3 className="mb-4 text-[11px] font-bold uppercase tracking-[0.3em] text-crimson-2">My Contribution</h3>
-                <ul className="space-y-4">
-                  {project.build.map((b) => (
-                    <li key={b} className="flex gap-3 text-[15px] leading-relaxed text-bone/85">
-                      <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: project.palette.accent }} />
-                      {b}
-                    </li>
+                <div className="mb-6">
+                  <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.3em] text-crimson-2">
+                    Behind the Build
+                  </p>
+
+                  <h3 className="font-display text-3xl tracking-wide text-bone sm:text-4xl">
+                    Development Journey
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-relaxed text-mist">
+                    A closer look at the implementation work behind this project.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {project.build.map((item, index) => (
+                    <motion.div
+                      key={item}
+                      initial={{ opacity: 0, x: -12 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, amount: 0.3 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: Math.min(index * 0.06, 0.3),
+                      }}
+                      className="relative flex gap-4 rounded-xl border border-white/[0.08] bg-white/[0.025] p-4 transition-colors hover:border-white/20 sm:p-5"
+                    >
+                      <div
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg font-display text-xl"
+                        style={{
+                          color: project.palette.accent,
+                          backgroundColor: `${project.palette.accent}18`,
+                        }}
+                      >
+                        {String(index + 1).padStart(2, '0')}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.22em] text-mist">
+                          Implementation {String(index + 1).padStart(2, '0')}
+                        </p>
+
+                        <p className="text-sm leading-relaxed text-bone/85 sm:text-[15px]">
+                          {item}
+                        </p>
+                      </div>
+                    </motion.div>
                   ))}
-                </ul>
+
+                  {project.build.length === 0 && (
+                    <p className="text-sm text-mist">
+                      Detailed implementation notes are not available for this project yet.
+                    </p>
+                  )}
+                </div>
               </motion.section>
               <div className="space-y-10">
                 <motion.section variants={block}>

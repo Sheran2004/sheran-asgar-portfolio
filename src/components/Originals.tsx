@@ -37,15 +37,40 @@ export default function Originals({ onOpen }: { onOpen: (p: Project) => void }) 
             <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.3em] text-crimson-2">Explore the collection</p>
             <h3 className="font-display text-3xl tracking-wide text-bone sm:text-4xl">Find a project</h3>
           </div>
-          <label className="block w-full md:max-w-sm">
-            <span className="sr-only">Search projects</span>
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search projects or technologies…"
-              className="min-h-11 w-full rounded-lg border border-white/15 bg-white/[0.04] px-4 text-sm text-bone outline-none placeholder:text-smoke focus:border-crimson-2/70 focus:ring-2 focus:ring-crimson-2/20"
-            />
-          </label>
+          <div className="flex w-full gap-2 md:max-w-sm">
+            <label className="relative block min-w-0 flex-1">
+              <span className="sr-only">Search projects</span>
+
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-lg text-smoke"
+              >
+                ⌕
+              </span>
+
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search projects, skills, technologies..."
+                className="min-h-11 w-full rounded-lg border border-white/15 bg-white/[0.04] pl-10 pr-4 text-sm text-bone outline-none transition placeholder:text-smoke focus:border-crimson-2/70 focus:ring-2 focus:ring-crimson-2/20"
+              />
+            </label>
+
+            {(query || category !== 'All') && (
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery('');
+                  setCategory('All');
+                }}
+                className="shrink-0 rounded-lg border border-white/15 px-3 text-xs font-semibold text-mist transition hover:border-crimson-2/60 hover:text-bone focus-visible:outline focus-visible:outline-2 focus-visible:outline-bone"
+                aria-label="Clear search and category filters"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter projects by category">
           {categories.map((item) => (
@@ -62,7 +87,46 @@ export default function Originals({ onOpen }: { onOpen: (p: Project) => void }) 
           <span className="self-center text-xs text-smoke" aria-live="polite">{filteredProjects.length} project{filteredProjects.length === 1 ? '' : 's'}</span>
         </div>
       </div>
-      {desktop && !reduced ? <PinnedOriginals onOpen={onOpen} visibleProjects={filteredProjects} /> : <RailOriginals onOpen={onOpen} visibleProjects={filteredProjects} />}
+      {filteredProjects.length === 0 ? (
+        <div
+          className="gutter flex min-h-[280px] flex-col items-center justify-center py-16 text-center"
+          role="status"
+        >
+          <span className="mb-5 text-5xl text-crimson-2" aria-hidden="true">
+            ⌕
+          </span>
+
+          <h4 className="font-display text-2xl tracking-wide text-bone sm:text-3xl">
+            No matching projects
+          </h4>
+
+          <p className="mt-3 max-w-md text-sm leading-6 text-mist">
+            We couldn't find a project matching your search. Try another keyword
+            or reset your filters to explore the full collection.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => {
+              setQuery('');
+              setCategory('All');
+            }}
+            className="mt-6 rounded-lg bg-crimson px-5 py-3 text-sm font-bold text-white transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
+          >
+            Explore all projects
+          </button>
+        </div>
+      ) : desktop && !reduced ? (
+        <PinnedOriginals
+          onOpen={onOpen}
+          visibleProjects={filteredProjects}
+        />
+      ) : (
+        <RailOriginals
+          onOpen={onOpen}
+          visibleProjects={filteredProjects}
+        />
+      )}
     </>
   );
 }

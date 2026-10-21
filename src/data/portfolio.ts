@@ -26,9 +26,9 @@ export const profile = {
   },
   resumePdf: '',
   portrait: {
-    src: '/assets/sheran-asgar.jpeg',
-    srcSet: '/assets/sheran-asgar.jpeg 1240w',
-    alt: 'Mohammad Sheran Asgar wearing a navy suit and burgundy tie',
+    src: '/assets/sheran-netflix.png',
+    srcSet: '/assets/sheran-netflix.png 1240w',
+    alt: 'Mohammad Sheran Asgar — cinematic portrait',
   },
   interests: ['Full-Stack Development', 'Artificial Intelligence', 'Data Analytics', 'Machine Learning'],
 };
