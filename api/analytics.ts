@@ -11,8 +11,9 @@ export default async function handler(
 
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
+
     return res.status(405).json({
-      error: "Method not allowed",
+      error: "Method not allowed.",
     });
   }
 
@@ -40,80 +41,95 @@ export default async function handler(
 
   const allowedRanges = ["7d", "30d", "90d"];
 
-  if (!allowedRanges.includes(range)) {
+  if (
+    typeof range !== "string" ||
+    !allowedRanges.includes(range)
+  ) {
     return res.status(400).json({
       error: "Choose a valid date range.",
     });
   }
 
   const days = Number(range.replace("d", ""));
+
+  // GoatCounter statistics API expects date-time parameters.
+  // Round both boundaries to the beginning of the UTC hour.
   const endDate = new Date();
-  const startDate = new Date();
+  endDate.setUTCMinutes(0, 0, 0);
 
-  startDate.setUTCDate(startDate.getUTCDate() - (days - 1));
+  const startDate = new Date(endDate);
+  startDate.setUTCDate(startDate.getUTCDate() - days);
 
-  const start = startDate.toISOString().slice(0, 10);
-  const end = endDate.toISOString().slice(0, 10);
+  const start = startDate.toISOString();
+  const end = endDate.toISOString();
+
+  const query = new URLSearchParams({
+    start,
+    end,
+  });
 
   const headers = {
     Authorization: `Bearer ${apiToken}`,
-    "Content-Type": "application/json",
     Accept: "application/json",
   };
 
+  const endpoints = {
+    totals: `${GOATCOUNTER_BASE_URL}/stats/total?${query}`,
+    pages: `${GOATCOUNTER_BASE_URL}/stats/hits?${query}&limit=10`,
+    browsers: `${GOATCOUNTER_BASE_URL}/stats/browsers?${query}`,
+    systems: `${GOATCOUNTER_BASE_URL}/stats/systems?${query}`,
+  };
+
   try {
-    const query = new URLSearchParams({ start, end });
-
-    const endpoints = [
-      `${GOATCOUNTER_BASE_URL}/stats/total?${query}`,
-      `${GOATCOUNTER_BASE_URL}/stats/hits?${query}&limit=10`,
-      `${GOATCOUNTER_BASE_URL}/stats/browser?${query}`,
-      `${GOATCOUNTER_BASE_URL}/stats/system?${query}`,
-    ];
-
-    const responses = await Promise.all(
-      endpoints.map((url) =>
-        fetch(url, {
+    const results = await Promise.all(
+      Object.entries(endpoints).map(async ([name, url]) => {
+        const response = await fetch(url, {
+          method: "GET",
           headers,
-          signal: AbortSignal.timeout(10000),
-        })
-      )
+          signal: AbortSignal.timeout(15000),
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.text();
+
+          // Do not log tokens or authorization headers.
+          console.error("GoatCounter endpoint failed:", {
+            endpoint: name,
+            status: response.status,
+            details: errorBody.slice(0, 300),
+          });
+
+          throw new Error(
+            `GoatCounter ${name} request failed (${response.status}).`
+          );
+        }
+
+        return [name, await response.json()] as const;
+      })
     );
 
-    if (responses.some((response) => !response.ok)) {
-      const failedResponse = responses.find(
-        (response) => !response.ok
-      );
-
-      console.error(
-        "GoatCounter API returned status:",
-        failedResponse?.status
-      );
-
-      return res.status(502).json({
-        error:
-          "Unable to retrieve analytics. Check API permissions and configuration.",
-      });
-    }
-
-    const [totals, pages, browsers, systems] = await Promise.all(
-      responses.map((response) => response.json())
-    );
+    const analytics = Object.fromEntries(results);
 
     return res.status(200).json({
       range,
       start,
       end,
-      totals,
-      pages,
-      browsers,
-      systems,
+      totals: analytics.totals,
+      pages: analytics.pages,
+      browsers: analytics.browsers,
+      systems: analytics.systems,
     });
   } catch (error) {
-    console.error("Analytics request failed:", error);
+    console.error(
+      "Recruiter analytics request failed:",
+      error instanceof Error ? error.message : "Unknown error"
+    );
 
     return res.status(502).json({
-      error: "Analytics service is temporarily unavailable.",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unable to retrieve analytics.",
     });
   }
 }
