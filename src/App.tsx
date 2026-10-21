@@ -1,3 +1,4 @@
+import RecruiterDashboard from './components/RecruiterDashboard';
 import { lazy, Suspense, useCallback, useEffect, useState, type ReactNode } from 'react';
 import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import { viewerProfiles, type ProfileId, type Project, type SectionId } from './data/portfolio';
@@ -41,6 +42,26 @@ function readStoredProfile(): ProfileId | null {
 }
 
 export default function App() {
+  const [isRecruiterRoute, setIsRecruiterRoute] = useState(
+    () => window.location.pathname === '/recruiter'
+  );
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setIsRecruiterRoute(window.location.pathname === '/recruiter');
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+    };
+  }, []);
+
+  if (isRecruiterRoute) {
+    return <RecruiterDashboard />;
+  }
+
   return (
     <SmoothScrollProvider>
       <Series />
